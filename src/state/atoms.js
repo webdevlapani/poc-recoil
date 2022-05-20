@@ -1,3 +1,4 @@
+import axios from "axios";
 import { atom, selector } from "recoil";
 export const todoListState = atom({
   key: "TodoList",
@@ -14,7 +15,6 @@ export const filteredTodoListState = selector({
   get: ({ get }) => {
     const filter = get(todoListFilterState);
     const list = get(todoListState);
-    debugger;
 
     switch (filter) {
       case "Show Completed":
@@ -26,3 +26,17 @@ export const filteredTodoListState = selector({
     }
   },
 });
+
+export const currentUserState = atom({
+  key: 'CurrentUser',
+  default: undefined
+})
+
+export const userDataState = selector({
+  key: 'UserData',
+  get : async ({get}) => {
+    if (!get(currentUserState)) return
+    const data= await axios.get(`https://jsonplaceholder.typicode.com/users/${get(currentUserState)}`).then(res => res.data) 
+    return data;
+  }
+})
